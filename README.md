@@ -1,101 +1,111 @@
-# 🐳 Docker Commands Reference
+# 🐳 Docker CLI Reference
 
-A quick-reference guide to the most useful Docker CLI commands.
+> A complete quick-reference for containers, images, volumes, networks, and Compose.
 
 ---
 
-## 📋 Container Management
+## Table of Contents
 
-### List Containers
-```bash
-docker ps                  # Running containers only
-docker ps -a               # All containers (including stopped)
-```
+- [Container Management](#container-management)
+- [Logs](#logs)
+- [Inspect & Monitor](#inspect--monitor)
+- [Shell Access](#shell-access)
+- [Images](#images)
+- [Networks](#networks)
+- [Volumes](#volumes)
+- [Copy Files](#copy-files)
+- [Cleanup & Disk Space](#cleanup--disk-space)
+- [Docker Compose](#docker-compose)
+- [Quick Reference](#quick-reference)
 
-### Start / Stop / Restart
+---
+
+## Container Management
+
 ```bash
+# List containers
+docker ps                        # Running only
+docker ps -a                     # All (including stopped)
+
+# Start / Stop / Restart
 docker stop <container>
 docker start <container>
 docker restart <container>
-```
 
-### Remove Containers
-```bash
-docker rm <container>      # Remove a stopped container
-docker container prune     # Remove all stopped containers
-```
-
----
-
-## 📜 Logs
-
-```bash
-docker logs <container>           # View logs
-docker logs -f <container>        # Follow (tail) logs in real time
+# Remove
+docker rm <container>            # Remove a stopped container
+docker container prune           # Remove all stopped containers
 ```
 
 ---
 
-## 🔍 Inspect & Monitor
+## Logs
 
 ```bash
-docker inspect <container-or-image>    # Full JSON details
-docker stats                           # Live CPU & memory usage
-docker top <container>                 # Running processes inside container
-docker port <container>                # Mapped ports
-docker events                          # Live stream of Docker daemon events
+docker logs <container>          # View logs
+docker logs -f <container>       # Follow (tail) logs in real time
 ```
 
 ---
 
-## 💻 Shell Access
+## Inspect & Monitor
 
 ```bash
-docker exec -it <container> sh         # Enter container (sh)
-docker exec -it <container> bash       # Enter container (bash)
+docker inspect <container|image> # Full JSON details
+docker stats                     # Live CPU & memory usage
+docker top <container>           # Running processes inside container
+docker port <container>          # Mapped ports
+docker events                    # Live stream of Docker daemon events
 ```
 
 ---
 
-## 📦 Images
+## Shell Access
 
-### List & Pull
 ```bash
-docker images                          # List local images
-docker image ls                        # Same as above
-docker pull <image:tag>                # Pull image from registry
-docker build -t myimg:latest .         # Build image from Dockerfile
-```
-
-### Remove Images
-```bash
-docker rmi <image>                     # Remove a specific image
-docker image prune                     # Remove dangling (unused) images
-docker image prune -a                  # Remove ALL unused images
+docker exec -it <container> sh   # Enter container shell (sh)
+docker exec -it <container> bash # Enter container shell (bash)
 ```
 
 ---
 
-## 🌐 Networks
+## Images
 
 ```bash
-docker network ls                      # List all networks
-docker network inspect <network>       # Inspect a network
+# List & Pull
+docker images                    # List local images
+docker image ls                  # Same as above
+docker pull <image:tag>          # Pull image from registry
+docker build -t myimg:latest .   # Build image from Dockerfile
+
+# Remove
+docker rmi <image>               # Remove a specific image
+docker image prune               # Remove dangling images
+docker image prune -a            # Remove all unused images
 ```
 
 ---
 
-## 💾 Volumes
+## Networks
 
 ```bash
-docker volume ls                       # List all volumes
-docker volume inspect <volume>         # Inspect a volume
-docker volume prune                    # Remove unused volumes
+docker network ls                # List all networks
+docker network inspect <network> # Inspect a network
 ```
 
 ---
 
-## 📁 Copy Files
+## Volumes
+
+```bash
+docker volume ls                 # List all volumes
+docker volume inspect <volume>   # Inspect a volume
+docker volume prune              # Remove unused volumes
+```
+
+---
+
+## Copy Files
 
 ```bash
 # Container → Host
@@ -107,46 +117,55 @@ docker cp ./localfile <container>:/path/in/container
 
 ---
 
-## 🧹 Cleanup & Disk Space
+## Cleanup & Disk Space
 
 ```bash
-docker system df                       # Show disk usage
-docker system prune                    # Remove unused containers, networks, images
-docker system prune -a --volumes       # Aggressive: also removes unused volumes
-docker builder prune                   # Clear build cache
+docker system df                          # Show disk usage breakdown
+docker system prune                       # Remove unused containers, networks, images
+docker system prune -a --volumes          # Aggressive — also removes unused volumes
+docker builder prune                      # Clear build cache
+docker container prune                    # Remove all stopped containers
+docker image prune -a                     # Remove all unused images
+docker volume prune                       # Remove unused volumes
+```
+
+> ⚠️ `docker system prune -a --volumes` is destructive. Double-check before running in production.
+
+---
+
+## Docker Compose
+
+```bash
+# Core
+docker compose up -d             # Start services in detached mode
+docker compose down              # Stop and remove containers
+docker compose ps                # List service containers
+docker compose logs -f           # Follow logs for all services
+docker compose restart           # Restart all services
+
+# Extras
+docker compose config            # Show resolved / merged config
+docker compose exec <service> sh # Open shell in a running service
 ```
 
 ---
 
-## 🐙 Docker Compose
+## Quick Reference
 
-### Core Commands
-```bash
-docker compose up -d                   # Start services in detached mode
-docker compose down                    # Stop and remove containers
-docker compose ps                      # List service containers
-docker compose logs -f                 # Follow logs for all services
-docker compose restart                 # Restart all services
-```
-
-### Extras
-```bash
-docker compose config                  # Show resolved/merged config
-docker compose exec <service> sh       # Shell into a running service
-```
+| Task                        | Command                                  |
+|-----------------------------|------------------------------------------|
+| See all containers          | `docker ps -a`                           |
+| Check disk usage            | `docker system df`                       |
+| Nuke all unused resources   | `docker system prune -a --volumes`       |
+| Watch live resource usage   | `docker stats`                           |
+| Tail container logs         | `docker logs -f <container>`             |
+| Debug a running container   | `docker exec -it <container> sh`         |
+| Inspect full config         | `docker inspect <container>`             |
+| List images                 | `docker images`                          |
+| Remove stopped containers   | `docker container prune`                 |
+| Clear build cache           | `docker builder prune`                   |
 
 ---
 
-## 💡 Tips
-
-| Task | Command |
-|---|---|
-| Nuke everything unused | `docker system prune -a --volumes` |
-| Check what's eating disk | `docker system df` |
-| Watch container in real time | `docker stats` + `docker logs -f` |
-| Debug a running container | `docker exec -it <container> sh` |
-| See how a container is configured | `docker inspect <container>` |
-
----
-
-> **Note:** Replace `<container>` with either the container name or ID. Use `docker ps -a` to find them.
+> **Tip:** Replace `<container>` with either the container **name** or **ID**.  
+> Use `docker ps -a` to find both.
